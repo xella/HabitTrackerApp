@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.xella.habittrackerapp.data.WorkoutContract.WorkoutEntry;
 import com.example.xella.habittrackerapp.data.WorkoutDbHelper;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method to display information in the onscreen TextView about the state of
-     * the pets database.
+     * the workout database.
      */
     private void displayDatabaseInfo() {
 
@@ -104,26 +105,26 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Helper method to insert hardcoded workout data into the database. For debugging purposes only.
      */
-    private void insertWorkout() {
+    private void insertDummyWorkout() {
 
         // Gets the database in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Create a ContentValues object where column names are the keys,
-        // and Toto's pet attributes are the values.
+        // and new workout's attributes are the values.
         ContentValues values = new ContentValues();
         values.put(WorkoutEntry.COLUMN_WORKOUT_TITLE, "Gym");
         values.put(WorkoutEntry.COLUMN_WORKOUT_COMMENT, "20xSquats, 30xPush-Ups");
         values.put(WorkoutEntry.COLUMN_WORKOUT_DURATION, 45);
         values.put(WorkoutEntry.COLUMN_WORKOUT_DATE, "20 Aug 2017");
 
-        // Insert a new row for Toto in the database, returning the ID of that new row.
+        // Insert a new row in the database, returning the ID of that new row.
         long newRowId = db.insert(WorkoutEntry.TABLE_NAME, null, values);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu options from the res/menu/menu_catalog.xml file.
+        // Inflate the menu options from the res/menu/main_menu.xml file.
         // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
@@ -135,10 +136,37 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
-                insertWorkout();
+                insertDummyWorkout();
                 displayDatabaseInfo();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Inserting new workout into the database
+     */
+    public void insertWorkout(String title, String comment, int duration, String date) {
+
+        //Gets the database in write mode
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(WorkoutEntry.COLUMN_WORKOUT_TITLE, title);
+        values.put(WorkoutEntry.COLUMN_WORKOUT_COMMENT, comment);
+        values.put(WorkoutEntry.COLUMN_WORKOUT_DURATION, duration);
+        values.put(WorkoutEntry.COLUMN_WORKOUT_DATE, date);
+
+        // Insert a new row in the database, returning the ID of that new row.
+        long newRowId = db.insert(WorkoutEntry.TABLE_NAME, null, values);
+
+        // Show a toast message depending on whether or not the insertion was successful
+        if (newRowId == -1) {
+            // If the row ID is -1, then there was an error with insertion.
+            Toast.makeText(this, "Error with saving workout", Toast.LENGTH_SHORT).show();
+        } else {
+            // Otherwise, the insertion was successful and we can display a toast with the row ID.
+            Toast.makeText(this, "Workout saved with row id: " + newRowId, Toast.LENGTH_SHORT).show();
+        }
     }
 }

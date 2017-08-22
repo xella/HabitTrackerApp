@@ -20,7 +20,7 @@ public final class WorkoutContract {
         /** Comment for the workout */
         public final static String COLUMN_WORKOUT_COMMENT = "comment";
 
-        /** Duration of the workout */
+        /** Duration of the workout (minutes) */
         public final static String COLUMN_WORKOUT_DURATION = "duration";
 
         /** Date of the workout */
