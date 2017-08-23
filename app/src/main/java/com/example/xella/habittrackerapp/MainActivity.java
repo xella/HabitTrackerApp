@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Method to display information in the onscreen TextView about the state of
-     * the workout database.
+     * Method for reading the data from the database and store it in a Cursor object
+     *
+     * @return a Cursor object
      */
-    private void displayDatabaseInfo() {
-
+    private Cursor readDb() {
         // Create and/or open a database to read from it
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
@@ -51,15 +51,23 @@ public class MainActivity extends AppCompatActivity {
                 WorkoutEntry.COLUMN_WORKOUT_DATE
         };
 
-        Cursor cursor = db.query(
+        return db.query(
                 WorkoutEntry.TABLE_NAME,
                 projection,
                 null,
                 null,
                 null,
                 null,
-                null
-        );
+                null );
+    }
+
+    /**
+     * Method to display information in the onscreen TextView about the state of
+     * the workout database.
+     */
+    private void displayDatabaseInfo() {
+
+        Cursor cursor = readDb();
 
         TextView displayView = (TextView) findViewById(R.id.workout_text_view);
 
